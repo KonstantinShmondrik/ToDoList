@@ -18,6 +18,7 @@ struct Constants {
         static let dayMonthCommaHoursMinutes = "dd MMMM, HH:mm"
         static let year = "yyyy"
         static let yearMonthDay = "yyyy-MM-dd"
+        static let dayMonthYear = "dd/MM/yy"
     }
 
     enum Timeouts {

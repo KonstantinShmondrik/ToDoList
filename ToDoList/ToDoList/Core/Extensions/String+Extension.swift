@@ -20,4 +20,19 @@ extension String {
         }
         return NSLocalizedString(self, tableName: nil, bundle: bundle, comment: "")
     }
+
+    func strikeThrough(
+        color: UIColor? = nil,
+        style: NSUnderlineStyle = .single
+    ) -> NSAttributedString {
+        var attributes: [NSAttributedString.Key: Any] = [
+            .strikethroughStyle: style.rawValue
+        ]
+
+        if let color = color {
+            attributes[.strikethroughColor] = color
+        }
+
+        return NSAttributedString(string: self, attributes: attributes)
+    }
 }

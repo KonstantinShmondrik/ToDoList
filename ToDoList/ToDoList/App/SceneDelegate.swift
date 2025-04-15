@@ -16,13 +16,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(windowScene: windowScene)
         self.window?.overrideUserInterfaceStyle = .light
-
-//        if Globals.isFirstTimeEnter != true {
-            let rootVC = MainViewController()
-            self.window?.rootViewController = rootVC
-            self.window?.makeKeyAndVisible()
-            //            Globals.isFirstTimeEnter = true
-//        }
+        
+        let router = MainScreenRouter()
+        let rootVC = router.compose()
+        self.window?.rootViewController = rootVC
+        self.window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}

@@ -28,200 +28,182 @@ class CoreDataService {
             }
         }
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        container.viewContext.automaticallyMergesChangesFromParent = true
         return container
     }()
 
-    private var viewContext: NSManagedObjectContext {
-        persistentContainer.viewContext
-    }
+    private var context: NSManagedObjectContext { persistentContainer.viewContext }
 
-    private var backgroundContext: NSManagedObjectContext {
-        let context = persistentContainer.newBackgroundContext()
-        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        return context
-    }
+    func saveContext() {
+        let context = self.context
+        let queue = DispatchQueue(label: "com.coredata.queue", attributes: .concurrent)
 
-    // MARK: - Save
-    func save(_ context: NSManagedObjectContext) {
-        guard context.hasChanges else { return }
-        do {
-            try context.save()
-        } catch {
-            Logger.log("Core Data Save Error: \(error)", level: .error)
-        }
-    }
+        let group = DispatchGroup()
+        group.enter()
 
-    // MARK: - Async Save
-    func saveAsync(_ context: NSManagedObjectContext) async throws {
-        if context.hasChanges {
-            try context.save()
-        }
-    }
-
-    // MARK: - Create
-    func create<T: NSManagedObject>(
-        inBackground: Bool = false,
-        isSaveRequired: Bool = true,
-        completion: @escaping (T) -> Void
-    ) {
-        let block: (NSManagedObjectContext) -> Void = { context in
-            if Thread.isMainThread {
-                Logger.log("main thread.", level: .warning)
+        queue.async {
+            if context.hasChanges {
+                do {
+                    try context.save()
+                    if Thread.isMainThread {
+                        Logger.log("Context successfully saved on the main thread.", level: .warning)
+                    } else {
+                        Logger.log("Context successfully saved on background thread", level: .info)
+                    }
+                } catch {
+                    let nserror = error as NSError
+                    Logger.log("Unresolved error \(nserror), \(nserror.userInfo)", level: .error)
+                }
             } else {
-                Logger.log("background thread.", level: .info)
+                Logger.log("No changes in context to save.", level: .info)
             }
-            let object = T(context: context)
-            completion(object)
-            if isSaveRequired {
-                self.save(context)
-            }
+
+            group.leave()
         }
 
-        if inBackground {
-            persistentContainer.performBackgroundTask(block)
-        } else {
-            block(viewContext)
+        group.wait()
+    }
+
+    func create<T: NSManagedObject>(isSaveRequired: Bool, completion: (T) -> Void) {
+        let object = T(context: context)
+        completion(object)
+
+        if isSaveRequired {
+            saveContext()
         }
     }
 
-    func createAsync<T: NSManagedObject>(
-        inBackground: Bool = false,
-        isSaveRequired: Bool = true,
-        configure: @escaping (T) -> Void
-    ) async throws {
-        let context = inBackground ? backgroundContext : viewContext
-        await context.perform {
-            if Thread.isMainThread {
-                Logger.log("main thread.", level: .warning)
-            } else {
-                Logger.log("background thread.", level: .info)
-            }
-            let object = T(context: context)
-            configure(object)
-            if isSaveRequired {
-                self.save(context)
-            }
-        }
-    }
-
-    // MARK: - Fetch One
-    func fetchOneAsync<T: NSManagedObject>(
+    func object<T: NSManagedObject>(
         with predicate: NSPredicate,
-        inBackground: Bool = false,
         prefetchingRelationships: [String]? = nil
-    ) async throws -> T? {
-        let context = inBackground ? backgroundContext : viewContext
-        return try await context.perform {
-            if Thread.isMainThread {
-                Logger.log("main thread.", level: .warning)
-            } else {
-                Logger.log("background thread.", level: .info)
-            }
-            let request = NSFetchRequest<T>(entityName: String(describing: T.self))
+    ) throws -> T? {
+        var result: T?
+
+        let context = self.context
+        let queue = DispatchQueue(label: "com.coredata.queue", attributes: .concurrent)
+        let group = DispatchGroup()
+        var fetchError: Error?
+
+        group.enter()
+
+        queue.async {
+            let request: NSFetchRequest<T> = NSFetchRequest<T>(entityName: String(describing: T.self))
             request.predicate = predicate
-            if let prefetch = prefetchingRelationships {
-                request.relationshipKeyPathsForPrefetching = prefetch
+            request.returnsObjectsAsFaults = false
+
+            if let prefetchingRelationships = prefetchingRelationships {
+                request.relationshipKeyPathsForPrefetching = prefetchingRelationships
             }
-            return try context.fetch(request).first
+
+            if Thread.isMainThread {
+                Logger.log("CoreData fetch (object<T>) is being made on the main thread.", level: .warning)
+            } else {
+                Logger.log("CoreData fetch (object<T>) is being made on a background thread.", level: .info)
+            }
+
+            do {
+                result = try context.fetch(request).first
+            } catch {
+                fetchError = error
+                Logger.log("Failed fetching object: \(error)", level: .error)
+            }
+
+            group.leave()
         }
+
+        group.wait()
+
+        if let error = fetchError {
+            throw error
+        }
+
+        return result
     }
 
-    // MARK: - Fetch All
-    func fetchAllAsync<T: NSManagedObject>(
-        predicate: NSPredicate? = nil,
-        sortDescriptors: [NSSortDescriptor]? = nil,
-        inBackground: Bool = false
-    ) async throws -> [T] {
-        let context = inBackground ? backgroundContext : viewContext
-        return try await context.perform {
-            if Thread.isMainThread {
-                Logger.log("main thread.", level: .warning)
-            } else {
-                Logger.log("background thread.", level: .info)
-            }
-            let request = NSFetchRequest<T>(entityName: String(describing: T.self))
+
+    func update<T: NSManagedObject>(with predicate: NSPredicate, completion: (T) -> Void) throws {
+        guard let object: T = try object(with: predicate) else { return }
+        completion(object)
+        saveContext()
+    }
+
+    func all<T: NSManagedObject>(
+        with predicate: NSPredicate? = nil,
+        sortDescriptors: [NSSortDescriptor]? = nil
+    ) throws -> [T] {
+        var result: [T] = []
+
+        let context = self.context
+        let queue = DispatchQueue(label: "com.coredata.queue", attributes: .concurrent)
+
+        let group = DispatchGroup()
+        group.enter()
+
+        queue.async {
+            let request: NSFetchRequest<T> = NSFetchRequest<T>(entityName: String(describing: T.self))
             request.predicate = predicate
             request.sortDescriptors = sortDescriptors
             request.returnsObjectsAsFaults = false
-            return try context.fetch(request)
-        }
-    }
 
-    // MARK: - Update
-    func updateAsync<T: NSManagedObject>(
-        predicate: NSPredicate,
-        inBackground: Bool = false,
-        updateBlock: @escaping (T) -> Void
-    ) async throws {
-        let context = inBackground ? backgroundContext : viewContext
-        try await context.perform {
             if Thread.isMainThread {
-                Logger.log("main thread.", level: .warning)
+                Logger.log("CoreData fetch request is being made on the main thread.", level: .warning)
             } else {
-                Logger.log("background thread.", level: .info)
+                Logger.log("CoreData fetch request is being made on a background thread.", level: .info)
             }
-            let request = NSFetchRequest<T>(entityName: String(describing: T.self))
-            request.predicate = predicate
-            if let object = try context.fetch(request).first {
-                updateBlock(object)
-                self.save(context)
+
+            do {
+                result = try context.fetch(request)
+            } catch {
+                Logger.log("Failed fetching data: \(error)", level: .error)
             }
+
+            group.leave()
         }
+
+        group.wait()
+        return result
     }
 
-    // MARK: - Delete One by Predicate
-    func deleteOneAsync<T: NSManagedObject>(
-        type: T.Type,
-        with predicate: NSPredicate,
-        inBackground: Bool = false
-    ) async throws {
-        let context = inBackground ? backgroundContext : viewContext
-        try await context.perform {
+    func delete<T: NSManagedObject>(object: T, isSaveNeeded: Bool = true) {
+        let context = self.context
+        let queue = DispatchQueue(label: "com.coredata.queue", attributes: .concurrent)
+
+        queue.async(flags: .barrier) {
             if Thread.isMainThread {
-                Logger.log("main thread.", level: .warning)
+                Logger.log("CoreData delete request is being made on the main thread.", level: .warning)
             } else {
-                Logger.log("background thread.", level: .info)
+                Logger.log("CoreData delete request is being made on a background thread.", level: .info)
             }
-            let request = NSFetchRequest<T>(entityName: String(describing: T.self))
-            request.predicate = predicate
-            if let object = try context.fetch(request).first {
-                context.delete(object)
-                self.save(context)
+
+            context.delete(object)
+            Logger.log("Deleted object of type \(T.self)", level: .info)
+
+            if isSaveNeeded && context.hasChanges {
+                do {
+                    try context.save()
+                    Logger.log("Context saved after deletion.", level: .info)
+                } catch {
+                    let nserror = error as NSError
+                    Logger.log("Failed to save context after deletion: \(nserror), \(nserror.userInfo)", level: .error)
+                }
             }
         }
     }
 
-    // MARK: - Delete All
-    func deleteAllAsync<T: NSManagedObject>(
-        type: T.Type,
-        inBackground: Bool = false
-    ) async throws {
-        let context = inBackground ? backgroundContext : viewContext
-        try await context.perform {
-            if Thread.isMainThread {
-                Logger.log("main thread.", level: .warning)
-            } else {
-                Logger.log("background thread.", level: .info)
-            }
-
-            let request = NSFetchRequest<T>(entityName: String(describing: T.self))
-            let objects = try context.fetch(request)
-            objects.forEach { context.delete($0) }
-            self.save(context)
-        }
+    func deleteAll<T: NSManagedObject>(type: T.Type) throws {
+        let objects: [T] = try all()
+        objects.forEach { delete(object: $0) }
     }
 
-    // MARK: - Recreate Database
     func recreateDatabase() {
         guard let url = persistentContainer.persistentStoreDescriptions.first?.url else { return }
 
         do {
             let coordinator = persistentContainer.persistentStoreCoordinator
-            viewContext.reset()
+            context.reset()
+
             try coordinator.destroyPersistentStore(at: url, ofType: NSSQLiteStoreType, options: nil)
             try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
-            viewContext.reset()
+            context.reset()
         } catch {
             Logger.log("\(error)", level: .error)
         }

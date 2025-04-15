@@ -15,4 +15,6 @@ enum AppColor {
     static let subText = UIColor(named: "subText") ?? missingColor
     static let white = UIColor(named: "white") ?? missingColor
     static let gray = UIColor(named: "gray") ?? missingColor
+    static let stroke = UIColor(named: "stroke") ?? missingColor
+    static let yellow = UIColor(named: "yellow") ?? missingColor
 }

@@ -15,12 +15,13 @@ struct TasksListDTO: Codable {
 
 struct Todo: Codable {
     let id: Int
+    let title: String?
     let todo: String
     let completed: Bool
     let userID: Int
 
     enum CodingKeys: String, CodingKey {
-        case id, todo, completed
+        case id, todo, completed, title
         case userID = "userId"
     }
 }
