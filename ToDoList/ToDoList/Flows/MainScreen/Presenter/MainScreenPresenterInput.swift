@@ -15,4 +15,7 @@ protocol MainScreenPresenterInput: AnyObject {
 
     func deleteItem(_ item: TaskItem)
     func completeItem(_ item: TaskItem)
+
+    func createNewTask()
+    func goToTaskDitails(for item: TaskItem)
 }

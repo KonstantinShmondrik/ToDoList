@@ -16,6 +16,10 @@ class MainScreenViewController: UIViewController {
     private let labelView = UILabel()
     private let strokeView = UIView()
 
+    private var tableViewBottomConstraint: NSLayoutConstraint!
+
+    private lazy var notificationManager = NotificationManager()
+
     private var items: [TaskItem] = [] {
         didSet {
             DispatchQueue.main.async { [weak self] in
@@ -28,11 +32,15 @@ class MainScreenViewController: UIViewController {
                 }
                 tableView.reloadData()
             }
-
         }
     }
 
     var presenter: MainScreenPresenterInput?
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +51,22 @@ class MainScreenViewController: UIViewController {
         setActions()
 
         presenter?.getData()
+    }
+
+    init() {
+        super.init(nibName: nil, bundle: nil)
+
+        notificationManager.subscribe(to: .keyboardWillHide)
+        notificationManager.subscribe(to: .keyboardWillShow)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        notificationManager.unsubscribe(from: .keyboardWillHide)
+        notificationManager.unsubscribe(from: .keyboardWillShow)
     }
 
     private func addSubviews() {
@@ -62,11 +86,12 @@ class MainScreenViewController: UIViewController {
         ]
 
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableViewBottomConstraint = tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         layoutConstraints += [
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableViewBottomConstraint
         ]
 
         bottomView.translatesAutoresizingMaskIntoConstraints = false
@@ -155,10 +180,12 @@ class MainScreenViewController: UIViewController {
 
     private func setActions() {
         searchBar.delegate = self
+        notificationManager.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(TaskViewCell.self)
 
+        hideKeyboardWhenTappedAround()
         addButton.addTarget(self, action: #selector(didTabAddButton), for: .touchUpInside)
     }
 
@@ -187,7 +214,7 @@ class MainScreenViewController: UIViewController {
     }
 
     @objc func didTabAddButton() {
-        Logger.log("didTabAddButton", level: .debug)
+        presenter?.createNewTask()
     }
 }
 
@@ -196,6 +223,15 @@ extension MainScreenViewController: UISearchBarDelegate {
 }
 
 extension MainScreenViewController: UITableViewDelegate {
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        view.endEditing(true)
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let item = items[indexPath.row]
+        presenter?.goToTaskDitails(for: item)
+    }
 
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let item = items[indexPath.row]
@@ -271,5 +307,39 @@ extension MainScreenViewController: TaskViewCellDelegate {
     func didTapOnCheckBox(at indexPath: IndexPath) {
         guard let item = items.first(where: { $0.id == items[indexPath.row].id }) else { return }
         presenter?.completeItem(item)
+    }
+}
+
+extension MainScreenViewController: NotificationManagerDelegate {
+
+    func performOnTrigger(_ notification: NotificationAction, object: Any?, userInfo: [AnyHashable : Any]?) {
+        switch notification {
+        case .keyboardWillShow:
+            if let frame = userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+               let duration = userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
+               let curveRawValue = userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt {
+
+                let keyboardHeight = frame.height
+                let options = UIView.AnimationOptions(rawValue: curveRawValue << 16)
+
+                tableViewBottomConstraint.constant = -keyboardHeight
+                UIView.animate(withDuration: duration, delay: 0, options: options, animations: {
+                    self.view.layoutIfNeeded()
+                }, completion: nil)
+            }
+        case .keyboardWillHide:
+            if let duration = userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
+               let curveRawValue = userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt {
+
+                let options = UIView.AnimationOptions(rawValue: curveRawValue << 16)
+
+                tableViewBottomConstraint.constant = 0
+                UIView.animate(withDuration: duration, delay: 0, options: options, animations: {
+                    self.view.layoutIfNeeded()
+                }, completion: nil)
+            }
+        default:
+            break
+        }
     }
 }

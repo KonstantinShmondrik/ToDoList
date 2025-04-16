@@ -30,6 +30,10 @@ extension MainScreenPresenter: MainScreenPresenterInput {
         interactor.deleteItem(item)
     }
 
+    func getData() {
+        interactor.getData()
+    }
+
     func makePreviewViewController(for item: TaskItem) -> UIViewController {
         router.makePreviewViewController(for: item)
     }
@@ -38,8 +42,12 @@ extension MainScreenPresenter: MainScreenPresenterInput {
         router.makeContextMenuActions(for: item)
     }
 
-    func getData() {
-        interactor.getData()
+    func createNewTask() {
+        router.createNewTask()
+    }
+
+    func goToTaskDitails(for item: TaskItem) {
+        router.goToTaskDitails(for: item)
     }
 }
 

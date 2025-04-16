@@ -37,12 +37,6 @@ class MainScreenRouter {
 
         return navigationController
     }
-
-    private func openFullScreen(for item: TaskItem) {
-        let router = TaskPreviewRouter(item: item)
-        let vc = router.compose()
-        view?.navigationController?.pushViewController(vc, animated: true)
-    }
 }
 
 extension MainScreenRouter: MainScreenRouterInput {
@@ -63,7 +57,7 @@ extension MainScreenRouter: MainScreenRouterInput {
 
     func makeContextMenuActions(for item: TaskItem) -> UIMenu {
         let edit = UIAction(title: "Редактировать", image: UIImage(resource: .edit)) { _ in
-            self.openFullScreen(for: item)
+            self.goToTaskDitails(for: item)
         }
 
         let export = UIAction(title: "Поделиться", image: UIImage(resource: .export)) { _ in
@@ -75,5 +69,17 @@ extension MainScreenRouter: MainScreenRouterInput {
         }
 
         return UIMenu(title: "", children: [edit, export, delete])
+    }
+
+    func createNewTask() {
+        let router = TaskDetailsRouter()
+        let vc = router.compose(for: nil)
+        view?.navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func goToTaskDitails(for item: TaskItem) {
+        let router = TaskDetailsRouter()
+        let vc = router.compose(for: item)
+        view?.navigationController?.pushViewController(vc, animated: true)
     }
 }

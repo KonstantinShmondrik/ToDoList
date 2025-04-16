@@ -18,11 +18,6 @@ class TaskPreviewPresenter {
     }
 }
 
-extension TaskPreviewPresenter: TaskPreviewPresenterInput {
+extension TaskPreviewPresenter: TaskPreviewPresenterInput { }
 
-
-}
-
-extension TaskPreviewPresenter: TaskPreviewInteractorOutput {
-
-}
+extension TaskPreviewPresenter: TaskPreviewInteractorOutput { }

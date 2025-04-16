@@ -10,7 +10,6 @@ import Foundation
 class TaskPreviewInteractor {
 
     weak var output: TaskPreviewInteractorOutput?
-
 }
 
 extension TaskPreviewInteractor: TaskPreviewInteractorInput {

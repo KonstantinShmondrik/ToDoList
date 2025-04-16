@@ -41,11 +41,11 @@ class TaskPreviewViewController: UIViewController {
     private func setupViews() {
         titleLabel.font = AppFont.Style.button
         titleLabel.textColor = AppColor.white
-        titleLabel.numberOfLines = 1
+        titleLabel.numberOfLines = 0
 
         descriptionLabel.font = AppFont.Style.caption
         descriptionLabel.textColor = AppColor.white
-        descriptionLabel.numberOfLines = 2
+        descriptionLabel.numberOfLines = 0
 
         additionalLabel.font = AppFont.Style.caption
         additionalLabel.textColor = AppColor.white.withAlphaComponent(0.7)
