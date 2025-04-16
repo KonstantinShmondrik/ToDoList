@@ -229,6 +229,9 @@ class MainScreenViewController: UIViewController {
 
 extension MainScreenViewController: UISearchBarDelegate {
 
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        presenter?.findTask(containing: searchText)
+    }
 }
 
 extension MainScreenViewController: UITableViewDelegate {

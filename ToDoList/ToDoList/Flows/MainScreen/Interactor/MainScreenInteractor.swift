@@ -14,6 +14,8 @@ class MainScreenInteractor {
 
     private var items: [TaskItem] = []
 
+    private var searcingText = ""
+
     private let userRatesApiFactory = ApiFactory.makeTasksListApi()
     private lazy var coreDataService = CommonStore.shared.tasksListCoreDataService
 
@@ -94,6 +96,8 @@ extension MainScreenInteractor: MainScreenInteractorInput {
             try coreDataService.update(with: predicate) { (task: TaskListLocal) in
                 task.isCompleted.toggle()
                 self.getList()
+                if searcingText.isEmpty { return }
+                findTask(containing: searcingText)
             }
         } catch {
             Logger.log("\(error)", level: .error)
@@ -109,6 +113,8 @@ extension MainScreenInteractor: MainScreenInteractorInput {
             if let object: TaskListLocal = try coreDataService.object(with: predicate) {
                 coreDataService.delete(object: object)
                 self.getList()
+                if searcingText.isEmpty { return }
+                findTask(containing: searcingText)
             }
         } catch {
             Logger.log("\(error)", level: .error)
@@ -117,5 +123,25 @@ extension MainScreenInteractor: MainScreenInteractorInput {
 
     func getData() {
         getList()
+        if searcingText.isEmpty { return }
+        findTask(containing: searcingText)
+    }
+
+    func findTask(containing text: String) {
+        searcingText = text
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+
+            let filteredItems: [TaskItem]
+            if text.isEmpty {
+                filteredItems = self.items
+            } else {
+                filteredItems = self.items.filter { $0.title.lowercased().contains(text.lowercased()) }
+            }
+
+            DispatchQueue.main.async {
+                self.output?.setData(filteredItems)
+            }
+        }
     }
 }

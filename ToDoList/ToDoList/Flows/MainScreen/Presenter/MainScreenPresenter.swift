@@ -49,6 +49,10 @@ extension MainScreenPresenter: MainScreenPresenterInput {
     func goToTaskDitails(for item: TaskItem) {
         router.goToTaskDitails(for: item)
     }
+
+    func findTask(containing text: String) {
+        interactor.findTask(containing: text)
+    }
 }
 
 extension MainScreenPresenter: MainScreenInteractorOutput {

@@ -10,4 +10,5 @@ protocol MainScreenInteractorInput: AnyObject {
     func getData()
     func deleteItem(_ item: TaskItem)
     func completeItem(_ item: TaskItem)
+    func findTask(containing text: String)
 }

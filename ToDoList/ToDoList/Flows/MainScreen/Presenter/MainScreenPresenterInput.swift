@@ -18,4 +18,6 @@ protocol MainScreenPresenterInput: AnyObject {
 
     func createNewTask()
     func goToTaskDitails(for item: TaskItem)
+
+    func findTask(containing text: String)
 }
