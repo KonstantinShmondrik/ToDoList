@@ -22,6 +22,10 @@ class MainScreenPresenter {
 
 extension MainScreenPresenter: MainScreenPresenterInput {
 
+    func completeItem(_ item: TaskItem) {
+        interactor.completeItem(item)
+    }
+
     func deleteItem(_ item: TaskItem) {
         interactor.deleteItem(item)
     }

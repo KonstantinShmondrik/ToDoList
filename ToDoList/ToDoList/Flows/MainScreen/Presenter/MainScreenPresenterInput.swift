@@ -14,4 +14,5 @@ protocol MainScreenPresenterInput: AnyObject {
     func makeContextMenuActions(for item: TaskItem) -> UIMenu
 
     func deleteItem(_ item: TaskItem)
+    func completeItem(_ item: TaskItem)
 }

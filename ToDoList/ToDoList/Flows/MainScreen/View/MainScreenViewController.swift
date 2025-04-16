@@ -261,7 +261,6 @@ extension MainScreenViewController: MainScreenViewInput {
         shareText(combinedText.trimmingCharacters(in: .whitespacesAndNewlines))
     }
     
-
     func setData(_ items: [TaskItem]) {
         self.items = items
     }
@@ -270,6 +269,7 @@ extension MainScreenViewController: MainScreenViewInput {
 extension MainScreenViewController: TaskViewCellDelegate {
 
     func didTapOnCheckBox(at indexPath: IndexPath) {
-        Logger.log("didTapOnCheckBox at\(indexPath)", level: .debug)
+        guard let item = items.first(where: { $0.id == items[indexPath.row].id }) else { return }
+        presenter?.completeItem(item)
     }
 }
