@@ -12,6 +12,5 @@ protocol TaskDetailsPresenterInput: TaskDetailsInteractorOutput {
     var taskDescription: String? { get }
     var taskCreatedAt: String? { get }
 
-    func viewDidLoad()
-    func didTapSave(title: String, description: String)
+    func didTapSave(item: TaskItem)
 }

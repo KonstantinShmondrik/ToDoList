@@ -29,13 +29,11 @@ extension NewTaskDetailsPresenter: TaskDetailsPresenterInput {
     var taskDescription: String? { nil }
 
     var taskCreatedAt: String? { Date.now.formattedAsDayMonthYear }
-
-    func viewDidLoad() {
-
-    }
     
-    func didTapSave(title: String, description: String) {
-        
+    func didTapSave(item: TaskItem) {
+        interactor.createItem(item) { [weak self] in
+            self?.view?.updateTaskList()
+        }
     }
 }
 

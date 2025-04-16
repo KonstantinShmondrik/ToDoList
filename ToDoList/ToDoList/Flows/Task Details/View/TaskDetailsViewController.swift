@@ -19,6 +19,13 @@ class TaskDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
 
     private lazy var notificationManager = NotificationManager()
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        notificationManager.subscribe(to: .keyboardWillShow)
+        notificationManager.subscribe(to: .keyboardWillHide)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,18 +35,11 @@ class TaskDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
         setActions()
     }
 
-    init() {
-        super.init(nibName: nil, bundle: nil)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
 
-        notificationManager.subscribe(to: .keyboardWillHide)
-        notificationManager.subscribe(to: .keyboardWillShow)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+        createTask()
 
-    deinit {
         notificationManager.unsubscribe(from: .keyboardWillHide)
         notificationManager.unsubscribe(from: .keyboardWillShow)
     }
@@ -65,7 +65,7 @@ class TaskDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
             additionalLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             additionalLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ]
-        
+
         descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
         descriptionTextViewBottomConstraint = descriptionTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
         layoutConstraints += [
@@ -118,6 +118,26 @@ class TaskDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
         descriptionTextView.delegate = self
     }
 
+    private func createTask() {
+        guard let id = presenter?.taskId else { return }
+
+        let title = !(titleTextField.text?.isEmpty ?? true)
+        ? titleTextField.text!
+        : (presenter?.taskTitle ?? "")
+
+        let description = descriptionTextView.text ?? ""
+
+        let item = TaskItem(id: id,
+                            title: title,
+                            description: description,
+                            isCompleted: false ,
+                            userID: 0,
+                            createdAt: presenter?.taskCreatedAt,
+        )
+
+        presenter?.didTapSave(item: item)
+    }
+
     @objc private func didTapLeftButton() {
         navigationController?.popViewController(animated: true)
     }
@@ -125,7 +145,9 @@ class TaskDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
 
 extension TaskDetailsViewController: TaskDetailsViewInput {
 
-
+    func updateTaskList() {
+        notificationManager.trigger(notification: .updateTaskList)
+    }
 }
 
 extension TaskDetailsViewController: NotificationManagerDelegate {

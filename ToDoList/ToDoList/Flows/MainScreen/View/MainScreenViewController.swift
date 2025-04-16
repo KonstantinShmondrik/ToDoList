@@ -40,6 +40,9 @@ class MainScreenViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = true
+
+        notificationManager.subscribe(to: .keyboardWillShow)
+        notificationManager.subscribe(to: .keyboardWillHide)
     }
 
     override func viewDidLoad() {
@@ -53,11 +56,18 @@ class MainScreenViewController: UIViewController {
         presenter?.getData()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        notificationManager.unsubscribe(from: .keyboardWillHide)
+        notificationManager.unsubscribe(from: .keyboardWillShow)
+    }
+
+
     init() {
         super.init(nibName: nil, bundle: nil)
 
-        notificationManager.subscribe(to: .keyboardWillHide)
-        notificationManager.subscribe(to: .keyboardWillShow)
+        notificationManager.subscribe(to: .updateTaskList)
     }
 
     required init?(coder: NSCoder) {
@@ -65,8 +75,7 @@ class MainScreenViewController: UIViewController {
     }
 
     deinit {
-        notificationManager.unsubscribe(from: .keyboardWillHide)
-        notificationManager.unsubscribe(from: .keyboardWillShow)
+        notificationManager.unsubscribe(from: .updateTaskList)
     }
 
     private func addSubviews() {
@@ -198,7 +207,7 @@ class MainScreenViewController: UIViewController {
         return nil
     }
 
-   private func shareText(_ text: String) {
+    private func shareText(_ text: String) {
         let activityVC = UIActivityViewController(activityItems: [text], applicationActivities: nil)
 
         activityVC.popoverPresentationController?.sourceView = self.view
@@ -284,7 +293,7 @@ extension MainScreenViewController: MainScreenViewInput {
     func deleteItem(_ item: TaskItem) {
         presenter?.deleteItem(item)
     }
-    
+
     func exportItem(_ item: TaskItem) {
         var combinedText = ""
         combinedText += "\(item.title)\n"
@@ -296,7 +305,7 @@ extension MainScreenViewController: MainScreenViewInput {
 
         shareText(combinedText.trimmingCharacters(in: .whitespacesAndNewlines))
     }
-    
+
     func setData(_ items: [TaskItem]) {
         self.items = items
     }
@@ -338,6 +347,8 @@ extension MainScreenViewController: NotificationManagerDelegate {
                     self.view.layoutIfNeeded()
                 }, completion: nil)
             }
+        case .updateTaskList:
+            presenter?.getData()
         default:
             break
         }

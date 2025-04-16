@@ -31,12 +31,10 @@ extension EditTaskDetailsPresenter: TaskDetailsPresenterInput {
 
     var taskCreatedAt: String? { task.createdAt }
 
-    func viewDidLoad() {
-
-    }
-
-    func didTapSave(title: String, description: String) {
-
+    func didTapSave(item: TaskItem) {
+        interactor.updateItem(item) { [weak self] in
+            self?.view?.updateTaskList()
+        }
     }
 }
 

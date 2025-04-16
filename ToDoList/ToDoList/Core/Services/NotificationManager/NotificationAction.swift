@@ -28,5 +28,5 @@ extension NotificationAction {
     
     static var keyboardWillShow: NotificationAction { .init(name: UIResponder.keyboardWillShowNotification) }
     static var keyboardWillHide: NotificationAction { .init(name: UIResponder.keyboardWillHideNotification) }
-   
+    static var updateTaskList: NotificationAction { .init() }
 }

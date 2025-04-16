@@ -9,4 +9,5 @@ import UIKit
 
 protocol TaskDetailsViewInput where Self: UIViewController {
 
+    func updateTaskList()
 }

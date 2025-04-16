@@ -8,4 +8,6 @@
 protocol TaskDetailsInteractorInput: AnyObject {
 
     func generateNewTaskID() -> Int
+    func updateItem(_ item: TaskItem, completion: (() -> Void)?)
+    func createItem(_ item: TaskItem, completion: (() -> Void)?)
 }
