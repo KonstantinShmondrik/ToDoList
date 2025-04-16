@@ -5,7 +5,13 @@
 //  Created by Константин Шмондрик on 14.04.2025.
 //
 
+import UIKit
+
 protocol MainScreenPresenterInput: AnyObject {
 
-   func getData()
+    func getData()
+    func makePreviewViewController(for item: TaskItem) -> UIViewController
+    func makeContextMenuActions(for item: TaskItem) -> UIMenu
+
+    func deleteItem(_ item: TaskItem)
 }

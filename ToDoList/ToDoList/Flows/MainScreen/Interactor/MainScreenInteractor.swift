@@ -88,6 +88,21 @@ class MainScreenInteractor {
 
 extension MainScreenInteractor: MainScreenInteractorInput {
 
+    func deleteItem(_ item: TaskItem) {
+        guard let item = items.first(where:  { $0.id == item.id }) else { return }
+        
+        do {
+            let predicate = NSPredicate(format: "id == %@", NSNumber(value: Int32(item.id)))
+
+            if let object: TaskListLocal = try coreDataService.object(with: predicate) {
+                coreDataService.delete(object: object)
+                    self.getList()
+            }
+        } catch {
+            dump(error)
+        }
+    }
+
     func getData() {
         getList()
     }

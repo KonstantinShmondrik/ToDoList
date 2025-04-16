@@ -162,29 +162,6 @@ class MainScreenViewController: UIViewController {
         addButton.addTarget(self, action: #selector(didTabAddButton), for: .touchUpInside)
     }
 
-    private func makePreviewViewController(for item: TaskItem) -> UIViewController {
-        let vc = TaskPreviewViewController(task: item) // создаешь свой VC
-        vc.preferredContentSize = CGSize(width: 300, height: 300)
-        return vc
-    }
-
-    private func makeContextMenuActions(for item: TaskItem) -> UIMenu {
-        let open = UIAction(title: "Открыть", image: UIImage(systemName: "doc.text")) { _ in
-            self.openFullScreen(for: item)
-        }
-
-        let delete = UIAction(title: "Удалить", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
-//            self.deleteItem(item)
-        }
-
-        return UIMenu(title: "", children: [open, delete])
-    }
-
-    private func openFullScreen(for item: TaskItem) {
-        let vc = TaskPreviewViewController(task: item)
-        navigationController?.pushViewController(vc, animated: true)
-    }
-
     private func currentIndexPathForConfig(_ config: UIContextMenuConfiguration) -> IndexPath? {
         if let id = config.identifier as? String,
            let section = Int(id.prefix(1)),
@@ -194,11 +171,24 @@ class MainScreenViewController: UIViewController {
         return nil
     }
 
+   private func shareText(_ text: String) {
+        let activityVC = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+
+        activityVC.popoverPresentationController?.sourceView = self.view
+        activityVC.popoverPresentationController?.sourceRect = CGRect(
+            x: self.view.bounds.midX,
+            y: self.view.bounds.midY,
+            width: 0,
+            height: 0
+        )
+        activityVC.popoverPresentationController?.permittedArrowDirections = []
+
+        self.present(activityVC, animated: true)
+    }
 
     @objc func didTabAddButton() {
         Logger.log("didTabAddButton", level: .debug)
     }
-
 }
 
 extension MainScreenViewController: UISearchBarDelegate {
@@ -213,10 +203,10 @@ extension MainScreenViewController: UITableViewDelegate {
         return UIContextMenuConfiguration(
             identifier: nil,
             previewProvider: {
-                return self.makePreviewViewController(for: item)
+                return self.presenter?.makePreviewViewController(for: item)
             },
             actionProvider: { _ in
-                return self.makeContextMenuActions(for: item)
+                return self.presenter?.makeContextMenuActions(for: item)
             }
         )
     }
@@ -240,7 +230,7 @@ extension MainScreenViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         items.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: TaskViewCell = tableView.dequeueReusableCell(for: indexPath)
         cell.delegate = self
@@ -251,11 +241,26 @@ extension MainScreenViewController: UITableViewDataSource {
         cell.isCompleted = items[indexPath.row].isCompleted
         return cell
     }
-    
-
 }
 
 extension MainScreenViewController: MainScreenViewInput {
+
+    func deleteItem(_ item: TaskItem) {
+        presenter?.deleteItem(item)
+    }
+    
+    func exportItem(_ item: TaskItem) {
+        var combinedText = ""
+        combinedText += "\(item.title)\n"
+        combinedText += "\(item.description)\n"
+
+        if let additional = item.createdAt, !additional.isEmpty {
+            combinedText += "\(additional)\n"
+        }
+
+        shareText(combinedText.trimmingCharacters(in: .whitespacesAndNewlines))
+    }
+    
 
     func setData(_ items: [TaskItem]) {
         self.items = items
@@ -266,75 +271,5 @@ extension MainScreenViewController: TaskViewCellDelegate {
 
     func didTapOnCheckBox(at indexPath: IndexPath) {
         Logger.log("didTapOnCheckBox at\(indexPath)", level: .debug)
-    }
-}
-
-
-
-
-
-
-
-
-// переместить
-final class TaskPreviewViewController: UIViewController {
-
-    private let task: TaskItem
-
-    private let titleLabel = UILabel()
-    private let descriptionLabel = UILabel()
-
-    init(task: TaskItem) {
-        self.task = task
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = AppColor.gray
-        view.layer.cornerRadius = 16
-        view.clipsToBounds = true
-
-        setupViews()
-        layout()
-        populate()
-    }
-
-    private func setupViews() {
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
-        titleLabel.textColor = AppColor.white
-        titleLabel.numberOfLines = 2
-
-        descriptionLabel.font = UIFont.systemFont(ofSize: 14)
-        descriptionLabel.textColor = AppColor.white.withAlphaComponent(0.7)
-        descriptionLabel.numberOfLines = 3
-
-        view.addSubview(titleLabel)
-        view.addSubview(descriptionLabel)
-    }
-
-    private func layout() {
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-
-            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            descriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            descriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -16)
-        ])
-    }
-
-    private func populate() {
-        titleLabel.text = task.title
-        descriptionLabel.text = task.description
     }
 }

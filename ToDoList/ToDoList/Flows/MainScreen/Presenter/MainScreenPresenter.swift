@@ -5,6 +5,8 @@
 //  Created by Константин Шмондрик on 14.04.2025.
 //
 
+import UIKit
+
 class MainScreenPresenter {
 
     weak var view: MainScreenViewInput?
@@ -19,6 +21,18 @@ class MainScreenPresenter {
 }
 
 extension MainScreenPresenter: MainScreenPresenterInput {
+
+    func deleteItem(_ item: TaskItem) {
+        interactor.deleteItem(item)
+    }
+
+    func makePreviewViewController(for item: TaskItem) -> UIViewController {
+        router.makePreviewViewController(for: item)
+    }
+    
+    func makeContextMenuActions(for item: TaskItem) -> UIMenu {
+        router.makeContextMenuActions(for: item)
+    }
 
     func getData() {
         interactor.getData()

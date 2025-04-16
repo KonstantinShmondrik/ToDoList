@@ -7,5 +7,6 @@
 
 protocol MainScreenInteractorInput: AnyObject {
 
-   func getData()
+    func getData()
+    func deleteItem(_ item: TaskItem)
 }

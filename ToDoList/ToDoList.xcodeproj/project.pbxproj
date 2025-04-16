@@ -56,6 +56,15 @@
 		00B532292DAEAE1E00692D16 /* CommonStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B532282DAEAE1E00692D16 /* CommonStore.swift */; };
 		00B5322C2DAEE04900692D16 /* TaskListLocal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5322B2DAEE04900692D16 /* TaskListLocal+CoreDataProperties.swift */; };
 		00B5322D2DAEE04900692D16 /* TaskListLocal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5322A2DAEE04900692D16 /* TaskListLocal+CoreDataClass.swift */; };
+		00B5A1262DAF1CD00033278A /* TaskPreviewRouterInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5A1252DAF1CD00033278A /* TaskPreviewRouterInput.swift */; };
+		00B5A1282DAF1D070033278A /* TaskPreviewRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5A1272DAF1D050033278A /* TaskPreviewRouter.swift */; };
+		00B5A12A2DAF1D290033278A /* TaskPreviewInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5A1292DAF1D200033278A /* TaskPreviewInteractor.swift */; };
+		00B5A12C2DAF1D3B0033278A /* TaskPreviewInteractorInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5A12B2DAF1D350033278A /* TaskPreviewInteractorInput.swift */; };
+		00B5A12E2DAF1D480033278A /* TaskPreviewInteractorOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5A12D2DAF1D3E0033278A /* TaskPreviewInteractorOutput.swift */; };
+		00B5A1302DAF1D620033278A /* TaskPreviewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5A12F2DAF1D570033278A /* TaskPreviewPresenter.swift */; };
+		00B5A1322DAF1D6F0033278A /* TaskPreviewPresenterInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5A1312DAF1D690033278A /* TaskPreviewPresenterInput.swift */; };
+		00B5A1342DAF1D860033278A /* TaskPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5A1332DAF1D7C0033278A /* TaskPreviewViewController.swift */; };
+		00B5A1362DAF1D960033278A /* TaskPreviewViewInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5A1352DAF1D8E0033278A /* TaskPreviewViewInput.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -110,6 +119,15 @@
 		00B532282DAEAE1E00692D16 /* CommonStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStore.swift; sourceTree = "<group>"; };
 		00B5322A2DAEE04900692D16 /* TaskListLocal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskListLocal+CoreDataClass.swift"; sourceTree = "<group>"; };
 		00B5322B2DAEE04900692D16 /* TaskListLocal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskListLocal+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		00B5A1252DAF1CD00033278A /* TaskPreviewRouterInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPreviewRouterInput.swift; sourceTree = "<group>"; };
+		00B5A1272DAF1D050033278A /* TaskPreviewRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPreviewRouter.swift; sourceTree = "<group>"; };
+		00B5A1292DAF1D200033278A /* TaskPreviewInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPreviewInteractor.swift; sourceTree = "<group>"; };
+		00B5A12B2DAF1D350033278A /* TaskPreviewInteractorInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPreviewInteractorInput.swift; sourceTree = "<group>"; };
+		00B5A12D2DAF1D3E0033278A /* TaskPreviewInteractorOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPreviewInteractorOutput.swift; sourceTree = "<group>"; };
+		00B5A12F2DAF1D570033278A /* TaskPreviewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPreviewPresenter.swift; sourceTree = "<group>"; };
+		00B5A1312DAF1D690033278A /* TaskPreviewPresenterInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPreviewPresenterInput.swift; sourceTree = "<group>"; };
+		00B5A1332DAF1D7C0033278A /* TaskPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPreviewViewController.swift; sourceTree = "<group>"; };
+		00B5A1352DAF1D8E0033278A /* TaskPreviewViewInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPreviewViewInput.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +198,7 @@
 			isa = PBXGroup;
 			children = (
 				00B531DB2DAD6AC500692D16 /* MainScreen */,
+				00B5A11F2DAF1C5D0033278A /* Task Preview */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -364,6 +383,62 @@
 			path = Local;
 			sourceTree = "<group>";
 		};
+		00B5A11F2DAF1C5D0033278A /* Task Preview */ = {
+			isa = PBXGroup;
+			children = (
+				00B5A1242DAF1C970033278A /* Entety */,
+				00B5A1232DAF1C8E0033278A /* Router */,
+				00B5A1222DAF1C830033278A /* Interactor */,
+				00B5A1212DAF1C7A0033278A /* Presenter */,
+				00B5A1202DAF1C710033278A /* View */,
+			);
+			path = "Task Preview";
+			sourceTree = "<group>";
+		};
+		00B5A1202DAF1C710033278A /* View */ = {
+			isa = PBXGroup;
+			children = (
+				00B5A1352DAF1D8E0033278A /* TaskPreviewViewInput.swift */,
+				00B5A1332DAF1D7C0033278A /* TaskPreviewViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		00B5A1212DAF1C7A0033278A /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				00B5A1312DAF1D690033278A /* TaskPreviewPresenterInput.swift */,
+				00B5A12F2DAF1D570033278A /* TaskPreviewPresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		00B5A1222DAF1C830033278A /* Interactor */ = {
+			isa = PBXGroup;
+			children = (
+				00B5A12D2DAF1D3E0033278A /* TaskPreviewInteractorOutput.swift */,
+				00B5A12B2DAF1D350033278A /* TaskPreviewInteractorInput.swift */,
+				00B5A1292DAF1D200033278A /* TaskPreviewInteractor.swift */,
+			);
+			path = Interactor;
+			sourceTree = "<group>";
+		};
+		00B5A1232DAF1C8E0033278A /* Router */ = {
+			isa = PBXGroup;
+			children = (
+				00B5A1252DAF1CD00033278A /* TaskPreviewRouterInput.swift */,
+				00B5A1272DAF1D050033278A /* TaskPreviewRouter.swift */,
+			);
+			path = Router;
+			sourceTree = "<group>";
+		};
+		00B5A1242DAF1C970033278A /* Entety */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Entety;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -444,6 +519,7 @@
 				00B531C02DAD592700692D16 /* Globals.swift in Sources */,
 				00B531F12DAD6C9800692D16 /* JSONParameterEncoder.swift in Sources */,
 				00B531B32DAD564000692D16 /* AppDelegate.swift in Sources */,
+				00B5A12C2DAF1D3B0033278A /* TaskPreviewInteractorInput.swift in Sources */,
 				00B532122DAD911800692D16 /* MainScreenPresenterInput.swift in Sources */,
 				00B531C42DAD594E00692D16 /* UserDefault.swift in Sources */,
 				00B531E32DAD6BF000692D16 /* AbstractRequestFactory.swift in Sources */,
@@ -453,6 +529,7 @@
 				00B532182DADB65700692D16 /* TaskItem.swift in Sources */,
 				00B531F72DAD6D4C00692D16 /* Texts.swift in Sources */,
 				00B531CF2DAD610900692D16 /* UITableView+Extension.swift in Sources */,
+				00B5A1322DAF1D6F0033278A /* TaskPreviewPresenterInput.swift in Sources */,
 				00B531C22DAD593500692D16 /* UserDefaultsKeys.swift in Sources */,
 				00B5320C2DAD90AC00692D16 /* MainScreenRouterImput.swift in Sources */,
 				00B532042DAD839000692D16 /* Logger.swift in Sources */,
@@ -460,6 +537,7 @@
 				00B531B42DAD564000692D16 /* SceneDelegate.swift in Sources */,
 				00B5320E2DAD90DC00692D16 /* MainScreenInteractorInput.swift in Sources */,
 				00B532102DAD90FA00692D16 /* MainScreenInteractor.swift in Sources */,
+				00B5A1262DAF1CD00033278A /* TaskPreviewRouterInput.swift in Sources */,
 				00B532162DAD94E700692D16 /* MainScreenInteractorOutput.swift in Sources */,
 				00B532002DAD750600692D16 /* MainApi.swift in Sources */,
 				00B531D72DAD626E00692D16 /* String+Extension.swift in Sources */,
@@ -470,17 +548,23 @@
 				00B531E52DAD6C0F00692D16 /* HttpConstants.swift in Sources */,
 				00B531E92DAD6C4900692D16 /* ParameterEncoding.swift in Sources */,
 				00B531B52DAD564000692D16 /* MainScreenViewController.swift in Sources */,
+				00B5A12A2DAF1D290033278A /* TaskPreviewInteractor.swift in Sources */,
+				00B5A12E2DAF1D480033278A /* TaskPreviewInteractorOutput.swift in Sources */,
 				00B5321F2DAE805800692D16 /* UILabel+Extansion.swift in Sources */,
 				00B531D52DAD620A00692D16 /* Locale+Extension.swift in Sources */,
 				00B531FB2DAD73A200692D16 /* ApiFactoryProtocol.swift in Sources */,
+				00B5A1302DAF1D620033278A /* TaskPreviewPresenter.swift in Sources */,
 				00B531D12DAD613B00692D16 /* UIView+Extension.swift in Sources */,
 				00B531CB2DAD5FB500692D16 /* AppColor.swift in Sources */,
 				00B532142DAD913200692D16 /* MainScreenPresenter.swift in Sources */,
 				00B531EB2DAD6C5E00692D16 /* HTTPMethod.swift in Sources */,
+				00B5A1282DAF1D070033278A /* TaskPreviewRouter.swift in Sources */,
 				00B532062DAD877F00692D16 /* NetworkLogLevel.swift in Sources */,
+				00B5A1362DAF1D960033278A /* TaskPreviewViewInput.swift in Sources */,
 				00B531F32DAD6CA200692D16 /* EndPointType.swift in Sources */,
 				00B531ED2DAD6C7700692D16 /* Router.swift in Sources */,
 				00B532082DAD8FF500692D16 /* MainScreenViewInput.swift in Sources */,
+				00B5A1342DAF1D860033278A /* TaskPreviewViewController.swift in Sources */,
 				00B531F52DAD6CE300692D16 /* Constants.swift in Sources */,
 				00B5322C2DAEE04900692D16 /* TaskListLocal+CoreDataProperties.swift in Sources */,
 				00B5322D2DAEE04900692D16 /* TaskListLocal+CoreDataClass.swift in Sources */,
