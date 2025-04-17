@@ -2,7 +2,7 @@
 //  TaskListLocal+CoreDataProperties.swift
 //  ToDoList
 //
-//  Created by Константин Шмондрик on 15.04.2025.
+//  Created by Константин Шмондрик on 17.04.2025.
 //
 //
 
@@ -16,16 +16,20 @@ extension TaskListLocal {
         return NSFetchRequest<TaskListLocal>(entityName: "TaskListLocal")
     }
 
+    @NSManaged public var createdAt: Date?
     @NSManaged public var id: Int32
+    @NSManaged public var isCompleted: Bool
     @NSManaged public var title: String?
     @NSManaged public var todo: String?
-    @NSManaged public var isCompleted: Bool
     @NSManaged public var userID: Int32
-    @NSManaged public var createdAt: Date?
 
 }
 
 extension TaskListLocal : Identifiable {
+
+}
+
+extension TaskListLocal {
 
     var createdAtFarmat: String? {
         guard let createdAt = createdAt else { return nil }

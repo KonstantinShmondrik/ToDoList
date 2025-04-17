@@ -15,12 +15,23 @@ class CoreDataService {
     }
 
     private let databaseName: DatabaseName
+    private let customContainer: NSPersistentContainer?
 
     init(databaseName: DatabaseName) {
         self.databaseName = databaseName
+        self.customContainer = nil
     }
 
-    private lazy var persistentContainer: NSPersistentContainer = {
+    init(container: NSPersistentContainer) {
+        self.databaseName = .tasksList
+        self.customContainer = container
+    }
+
+    private(set) lazy var persistentContainer: NSPersistentContainer = {
+        if let custom = customContainer {
+            return custom
+        }
+
         let container = NSPersistentContainer(name: databaseName.rawValue)
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
@@ -190,8 +201,22 @@ class CoreDataService {
     }
 
     func deleteAll<T: NSManagedObject>(type: T.Type) throws {
+        let context = self.context
         let objects: [T] = try all()
-        objects.forEach { delete(object: $0) }
+
+        context.performAndWait {
+            for obj in objects {
+                context.delete(obj)
+            }
+
+            if context.hasChanges {
+                do {
+                    try context.save()
+                } catch {
+                    Logger.log("Error while saving context after deleting all: \(error)", level: .error)
+                }
+            }
+        }
     }
 
     func recreateDatabase() {
@@ -209,3 +234,21 @@ class CoreDataService {
         }
     }
 }
+
+#if DEBUG
+extension CoreDataService {
+
+    func setPersistentStoreDescription(_ description: NSPersistentStoreDescription) {
+        let container = NSPersistentContainer(name: databaseName.rawValue)
+        container.persistentStoreDescriptions = [description]
+
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Failed to load store: \(error)")
+            }
+        }
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        self.persistentContainer = container
+    }
+}
+#endif
