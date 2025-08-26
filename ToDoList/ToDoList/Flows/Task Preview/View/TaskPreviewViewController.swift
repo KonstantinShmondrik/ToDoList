@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TaskPreviewViewController: UIViewController {
+final class TaskPreviewViewController: UIViewController {
 
     var presenter: TaskPreviewPresenterInput?
 

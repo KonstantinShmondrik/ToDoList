@@ -13,7 +13,7 @@ protocol NotificationManagerDelegate: AnyObject {
     func performOnTrigger(_ notification: NotificationAction, object: Any?, userInfo: [AnyHashable: Any]?)
 }
 
-class NotificationManager {
+final class NotificationManager {
 
     private let notificationCenter = NotificationCenter.default
     weak var delegate: NotificationManagerDelegate?

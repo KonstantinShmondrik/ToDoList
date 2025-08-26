@@ -12,7 +12,7 @@ protocol TaskViewCellDelegate: AnyObject {
     func didTapOnCheckBox(at indexPath: IndexPath)
 }
 
-class TaskViewCell: UITableViewCell {
+final class TaskViewCell: UITableViewCell {
 
     private let containerView = UIView()
     private let iconImageView = UIImageView()

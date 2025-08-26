@@ -5,7 +5,7 @@
 //  Created by Константин Шмондрик on 16.04.2025.
 //
 
-class EditTaskDetailsPresenter {
+final class EditTaskDetailsPresenter {
 
     private let task: TaskItem
 

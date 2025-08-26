@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainScreenViewController: UIViewController {
+final class MainScreenViewController: UIViewController {
 
     private let tableView = UITableView()
     private let addButton = UIButton()
@@ -242,7 +242,7 @@ extension MainScreenViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = items[indexPath.row]
-        presenter?.goToTaskDitails(for: item)
+        presenter?.goToTaskDetails(for: item)
     }
 
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {

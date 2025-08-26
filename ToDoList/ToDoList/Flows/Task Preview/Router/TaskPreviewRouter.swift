@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TaskPreviewRouter {
+final class TaskPreviewRouter {
 
     let item: TaskItem
 

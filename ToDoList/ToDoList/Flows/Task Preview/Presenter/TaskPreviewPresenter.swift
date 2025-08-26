@@ -5,7 +5,7 @@
 //  Created by Константин Шмондрик on 16.04.2025.
 //
 
-class TaskPreviewPresenter {
+final class TaskPreviewPresenter {
 
     weak var view: TaskPreviewViewInput?
     let interactor: TaskPreviewInteractorInput

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class MainScreenInteractor {
+final class MainScreenInteractor {
 
     weak var output: MainScreenInteractorOutput?
 

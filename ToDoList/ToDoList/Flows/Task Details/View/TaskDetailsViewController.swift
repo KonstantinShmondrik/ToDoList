@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TaskDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
+final class TaskDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
 
     var presenter: TaskDetailsPresenterInput?
 

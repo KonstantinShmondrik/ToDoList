@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainScreenPresenter {
+final class MainScreenPresenter {
 
     weak var view: MainScreenViewInput?
     let interactor: MainScreenInteractorInput
@@ -46,8 +46,8 @@ extension MainScreenPresenter: MainScreenPresenterInput {
         router.createNewTask()
     }
 
-    func goToTaskDitails(for item: TaskItem) {
-        router.goToTaskDitails(for: item)
+    func goToTaskDetails(for item: TaskItem) {
+        router.goToTaskDetails(for: item)
     }
 
     func findTask(containing text: String) {

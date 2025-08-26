@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainScreenRouter {
+final class MainScreenRouter {
 
     private weak var view: MainScreenViewInput?
 
@@ -57,7 +57,7 @@ extension MainScreenRouter: MainScreenRouterInput {
 
     func makeContextMenuActions(for item: TaskItem) -> UIMenu {
         let edit = UIAction(title: "Редактировать", image: UIImage(resource: .edit)) { _ in
-            self.goToTaskDitails(for: item)
+            self.goToTaskDetails(for: item)
         }
 
         let export = UIAction(title: "Поделиться", image: UIImage(resource: .export)) { _ in
@@ -77,7 +77,7 @@ extension MainScreenRouter: MainScreenRouterInput {
         view?.navigationController?.pushViewController(vc, animated: true)
     }
 
-    func goToTaskDitails(for item: TaskItem) {
+    func goToTaskDetails(for item: TaskItem) {
         let router = TaskDetailsRouter()
         let vc = router.compose(for: item)
         view?.navigationController?.pushViewController(vc, animated: true)

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TaskDetailsRouter {
+final class TaskDetailsRouter {
 
     private weak var view: TaskDetailsViewInput?
 
