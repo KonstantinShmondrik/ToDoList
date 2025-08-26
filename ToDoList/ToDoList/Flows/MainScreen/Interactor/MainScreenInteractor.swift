@@ -14,7 +14,7 @@ final class MainScreenInteractor {
 
     private var items: [TaskItem] = []
 
-    private var searcingText = ""
+    private var searchingText = ""
 
     private let userRatesApiFactory = ApiFactory.makeTasksListApi()
     private lazy var coreDataService = CommonStore.shared.tasksListCoreDataService
@@ -67,7 +67,7 @@ final class MainScreenInteractor {
     private func createLocalItem(_ item: Todo, completion: @escaping (TaskListLocal) -> Void) {
         coreDataService.create(isSaveRequired: true) { (object: TaskListLocal) in
             object.id = Int32(item.id)
-            object.title = item.title ?? "\(item.id) Задача"
+            object.title = item.title ?? "\(item.id) \(Texts.LocalTexts.task)"
             object.todo = item.todo
             object.isCompleted = item.completed
             object.userID = Int32(item.userID)
@@ -79,11 +79,11 @@ final class MainScreenInteractor {
     private func convert(_ item: TaskListLocal) -> TaskItem? {
         return TaskItem(
             id: Int(item.id),
-            title: item.title ?? "\(item.id) Задача",
+            title: item.title ?? "\(item.id) \(Texts.LocalTexts.task)",
             description: item.todo ?? "",
             isCompleted: item.isCompleted,
             userID: Int(item.userID),
-            createdAt: item.createdAtFarmat
+            createdAt: item.createdAtFormat
         )
     }
 }
@@ -96,8 +96,8 @@ extension MainScreenInteractor: MainScreenInteractorInput {
             try coreDataService.update(with: predicate) { (task: TaskListLocal) in
                 task.isCompleted.toggle()
                 self.getList()
-                if searcingText.isEmpty { return }
-                findTask(containing: searcingText)
+                if searchingText.isEmpty { return }
+                findTask(containing: searchingText)
             }
         } catch {
             Logger.log("\(error)", level: .error)
@@ -113,8 +113,8 @@ extension MainScreenInteractor: MainScreenInteractorInput {
             if let object: TaskListLocal = try coreDataService.object(with: predicate) {
                 coreDataService.delete(object: object)
                 self.getList()
-                if searcingText.isEmpty { return }
-                findTask(containing: searcingText)
+                if searchingText.isEmpty { return }
+                findTask(containing: searchingText)
             }
         } catch {
             Logger.log("\(error)", level: .error)
@@ -123,12 +123,12 @@ extension MainScreenInteractor: MainScreenInteractorInput {
 
     func getData() {
         getList()
-        if searcingText.isEmpty { return }
-        findTask(containing: searcingText)
+        if searchingText.isEmpty { return }
+        findTask(containing: searchingText)
     }
 
     func findTask(containing text: String) {
-        searcingText = text
+        searchingText = text
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
 

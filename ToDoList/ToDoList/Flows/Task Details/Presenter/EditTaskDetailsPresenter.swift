@@ -13,7 +13,12 @@ final class EditTaskDetailsPresenter {
     let interactor: TaskDetailsInteractorInput
     let router: TaskDetailsRouterInput
 
-    init(view: TaskDetailsViewInput, interactor: TaskDetailsInteractorInput, router: TaskDetailsRouterInput, task: TaskItem) {
+    init(
+        view: TaskDetailsViewInput,
+        interactor: TaskDetailsInteractorInput,
+        router: TaskDetailsRouterInput,
+        task: TaskItem
+    ) {
         self.view = view
         self.interactor = interactor
         self.router = router

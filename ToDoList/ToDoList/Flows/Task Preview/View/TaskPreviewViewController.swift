@@ -89,7 +89,4 @@ final class TaskPreviewViewController: UIViewController {
     }
 }
 
-extension TaskPreviewViewController: TaskPreviewViewInput {
-
-    
-}
+extension TaskPreviewViewController: TaskPreviewViewInput {}

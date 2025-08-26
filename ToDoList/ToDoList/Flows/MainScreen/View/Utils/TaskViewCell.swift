@@ -18,7 +18,7 @@ final class TaskViewCell: UITableViewCell {
     private let iconImageView = UIImageView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
-    private let aditionalLabel = UILabel()
+    private let additionalLabel = UILabel()
     private let separatorView = UIView()
 
     weak var delegate: TaskViewCellDelegate?
@@ -69,7 +69,7 @@ final class TaskViewCell: UITableViewCell {
         titleLabel.attributedText = nil
         titleLabel.text = nil
         subtitleLabel.text = nil
-        aditionalLabel.text = nil
+        additionalLabel.text = nil
         iconImageView.image = nil
     }
 
@@ -96,7 +96,7 @@ final class TaskViewCell: UITableViewCell {
 
     private func addSubviews() {
         contentView.addSubviews(iconImageView ,containerView, separatorView)
-        containerView.addSubviews(titleLabel, subtitleLabel, aditionalLabel)
+        containerView.addSubviews(titleLabel, subtitleLabel, additionalLabel)
     }
 
     private func setLayoutConstraints() {
@@ -132,12 +132,12 @@ final class TaskViewCell: UITableViewCell {
             subtitleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
             ]
 
-        aditionalLabel.translatesAutoresizingMaskIntoConstraints = false
+        additionalLabel.translatesAutoresizingMaskIntoConstraints = false
         layoutConstraints += [
-            aditionalLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            aditionalLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 6),
-            aditionalLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            aditionalLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+            additionalLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            additionalLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 6),
+            additionalLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            additionalLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
             ]
 
         separatorView.translatesAutoresizingMaskIntoConstraints = false
@@ -172,9 +172,9 @@ final class TaskViewCell: UITableViewCell {
         subtitleLabel.font = AppFont.Style.caption
         subtitleLabel.numberOfLines = 2
 
-        aditionalLabel.textColor = AppColor.white.withAlphaComponent(0.7)
-        aditionalLabel.font = AppFont.Style.caption
-        aditionalLabel.numberOfLines = 0
+        additionalLabel.textColor = AppColor.white.withAlphaComponent(0.7)
+        additionalLabel.font = AppFont.Style.caption
+        additionalLabel.numberOfLines = 0
 
         separatorView.backgroundColor = AppColor.stroke
     }
@@ -214,8 +214,8 @@ extension TaskViewCell {
         set { subtitleLabel.text = newValue }
     }
 
-    var aditional: String? {
-        get { aditionalLabel.text }
-        set { aditionalLabel.text = newValue }
+    var additional: String? {
+        get { additionalLabel.text }
+        set { additionalLabel.text = newValue }
     }
 }

@@ -9,27 +9,7 @@ import UIKit
 
 final class TaskDetailsRouter {
 
-    private weak var view: TaskDetailsViewInput?
-
-    func compose(for task: TaskItem?) -> UIViewController {
-        let viewController = TaskDetailsViewController()
-        self.view = viewController
-
-        let interactor = TaskDetailsInteractor()
-        let presenter: TaskDetailsPresenterInput
-
-        if let task {
-            presenter = EditTaskDetailsPresenter(view: viewController, interactor: interactor, router: self, task: task)
-        } else {
-            presenter = NewTaskDetailsPresenter(view: viewController, interactor: interactor, router: self)
-        }
-
-        interactor.output = presenter
-        viewController.presenter = presenter
-
-        return viewController
-    }
-
+    weak var view: TaskDetailsViewInput?
 }
 
 extension TaskDetailsRouter: TaskDetailsRouterInput {

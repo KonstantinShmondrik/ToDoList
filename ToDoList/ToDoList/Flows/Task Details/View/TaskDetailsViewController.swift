@@ -101,7 +101,7 @@ final class TaskDetailsViewController: UIViewController, UIGestureRecognizerDele
 
     private func setActions() {
         let backButton = UIButton(type: .system)
-        backButton.setTitle("Назад", for: .normal)
+        backButton.setTitle(Texts.LocalTexts.back, for: .normal)
         backButton.setImage(UIImage(systemName: "chevron.backward"), for: .normal)
         backButton.tintColor = AppColor.yellow
         backButton.titleLabel?.font = UIFont.systemFont(ofSize: 17)

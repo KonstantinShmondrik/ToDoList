@@ -18,6 +18,17 @@ final class MainScreenPresenter {
         self.interactor = interactor
         self.router = router
     }
+
+    private func didSelectContextMenuAction(_ action: ContextMenuAction) {
+        switch action {
+        case .edit(let task):
+            router.goToTaskDetails(for: task)
+        case .export(let task):
+            view?.exportItem(task)
+        case .delete(let task):
+            view?.deleteItem(task)
+        }
+    }
 }
 
 extension MainScreenPresenter: MainScreenPresenterInput {
@@ -35,19 +46,29 @@ extension MainScreenPresenter: MainScreenPresenterInput {
     }
 
     func makePreviewViewController(for item: TaskItem) -> UIViewController {
-        router.makePreviewViewController(for: item)
+        let vc = router.makePreviewViewController(for: item)
+        let targetSize = CGSize(width: UIScreen.main.bounds.width - 40, height: UIView.layoutFittingCompressedSize.height)
+        let calculatedSize = vc.view.systemLayoutSizeFitting(
+            targetSize,
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        vc.preferredContentSize = calculatedSize
+        return vc
     }
-    
-    func makeContextMenuActions(for item: TaskItem) -> UIMenu {
-        router.makeContextMenuActions(for: item)
+
+    func makeContextMenu(for item: TaskItem) -> UIMenu {
+        return router.makeContextMenuActions(for: item) { [weak self] action in
+            self?.didSelectContextMenuAction(action)
+        }
     }
 
     func createNewTask() {
         router.createNewTask()
     }
 
-    func goToTaskDetails(for item: TaskItem) {
-        router.goToTaskDetails(for: item)
+    func didSelectTask(_ task: TaskItem) {
+        router.goToTaskDetails(for: task)
     }
 
     func findTask(containing text: String) {

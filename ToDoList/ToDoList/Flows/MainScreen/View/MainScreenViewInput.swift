@@ -12,5 +12,4 @@ protocol MainScreenViewInput where Self: UIViewController {
     func setData(_ items: [TaskItem])
     func deleteItem(_ item: TaskItem)
     func exportItem(_ item: TaskItem)
-    
 }
