@@ -26,7 +26,7 @@ protocol AbstractRequestFactoryProtocol {
 
 // MARK: - AbstractRequestFactory
 
-class AbstractRequestFactory<API: EndPointType>: AbstractRequestFactoryProtocol {
+final class AbstractRequestFactory<API: EndPointType>: AbstractRequestFactoryProtocol {
 
     // MARK: - Properties
 

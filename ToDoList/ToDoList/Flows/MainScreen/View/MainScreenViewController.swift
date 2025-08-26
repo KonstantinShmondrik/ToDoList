@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainScreenViewController: UIViewController {
+final class MainScreenViewController: UIViewController {
 
     private let tableView = UITableView()
     private let addButton = UIButton()
@@ -25,10 +25,10 @@ class MainScreenViewController: UIViewController {
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
                 if !self.items.isEmpty {
-                    labelView.text = self.items.count == 1 ? "1 задача" : "\(self.items.count) задач"
+                    labelView.text = self.items.count == 1 ? Texts.LocalTexts.oneTask : "\(self.items.count) \(Texts.LocalTexts.manyTasks)"
                     self.tableView.reloadData()
                 } else {
-                    labelView.text = "Нет задач"
+                    labelView.text = Texts.LocalTexts.noTasks
                 }
                 tableView.reloadData()
             }
@@ -137,8 +137,11 @@ class MainScreenViewController: UIViewController {
     }
 
     private func stylize() {
+        title = Texts.LocalTexts.tasks
+        navigationItem.largeTitleDisplayMode = .always
+
         view.backgroundColor = .black
-        searchBar.placeholder = "Поиск"
+        searchBar.placeholder = Texts.LocalTexts.search
         searchBar.searchBarStyle = .minimal
         searchBar.backgroundColor = .clear
         searchBar.tintColor = AppColor.white
@@ -147,7 +150,7 @@ class MainScreenViewController: UIViewController {
             textField.textColor = AppColor.white
 
             textField.attributedPlaceholder = NSAttributedString(
-                string: "Поиск",
+                string: Texts.LocalTexts.search,
                 attributes: [.foregroundColor: AppColor.white.withAlphaComponent(0.5)]
             )
 
@@ -178,7 +181,7 @@ class MainScreenViewController: UIViewController {
 
         addButton.setImage(UIImage(resource: .addButton), for: .normal)
 
-        labelView.text = "Нет задач"
+        labelView.text = Texts.LocalTexts.noTasks
         labelView.font = AppFont.Style.caption
         labelView.textColor = AppColor.white
 
@@ -242,24 +245,23 @@ extension MainScreenViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = items[indexPath.row]
-        presenter?.goToTaskDitails(for: item)
+        presenter?.didSelectTask(item)
     }
 
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let item = items[indexPath.row]
 
-        return UIContextMenuConfiguration(
-            identifier: nil,
-            previewProvider: {
-                return self.presenter?.makePreviewViewController(for: item)
-            },
-            actionProvider: { _ in
-                return self.presenter?.makeContextMenuActions(for: item)
-            }
-        )
+        let menu = presenter?.makeContextMenu(for: item)
+
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            return menu
+        }
     }
 
-    func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+    func tableView(
+        _ tableView: UITableView,
+        previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration
+    ) -> UITargetedPreview? {
         guard let indexPath = currentIndexPathForConfig(configuration),
               let cell = tableView.cellForRow(at: indexPath) as? TaskViewCell else {
             return nil
@@ -270,7 +272,6 @@ extension MainScreenViewController: UITableViewDelegate {
 
         return UITargetedPreview(view: cell.contentView, parameters: parameters)
     }
-
 }
 
 extension MainScreenViewController: UITableViewDataSource {
@@ -284,7 +285,7 @@ extension MainScreenViewController: UITableViewDataSource {
         cell.delegate = self
         cell.title = items[indexPath.row].title
         cell.subtitle = items[indexPath.row].description
-        cell.aditional = items[indexPath.row].createdAt
+        cell.additional = items[indexPath.row].createdAt
         cell.indexPath = indexPath
         cell.isCompleted = items[indexPath.row].isCompleted
         return cell

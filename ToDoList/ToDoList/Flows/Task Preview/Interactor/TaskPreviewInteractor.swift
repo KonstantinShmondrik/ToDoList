@@ -7,7 +7,7 @@
 
 import Foundation
 
-class TaskPreviewInteractor {
+final class TaskPreviewInteractor {
 
     weak var output: TaskPreviewInteractorOutput?
 }

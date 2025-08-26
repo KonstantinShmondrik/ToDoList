@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TaskDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
+final class TaskDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
 
     var presenter: TaskDetailsPresenterInput?
 
@@ -101,7 +101,7 @@ class TaskDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
 
     private func setActions() {
         let backButton = UIButton(type: .system)
-        backButton.setTitle("Назад", for: .normal)
+        backButton.setTitle(Texts.LocalTexts.back, for: .normal)
         backButton.setImage(UIImage(systemName: "chevron.backward"), for: .normal)
         backButton.tintColor = AppColor.yellow
         backButton.titleLabel?.font = UIFont.systemFont(ofSize: 17)

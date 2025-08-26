@@ -7,7 +7,7 @@
 
 import Foundation
 
-class TaskDetailsInteractor {
+final class TaskDetailsInteractor {
 
     weak var output: TaskDetailsInteractorOutput?
 

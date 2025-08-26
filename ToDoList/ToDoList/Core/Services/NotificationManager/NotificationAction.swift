@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NotificationAction: RawRepresentable, Equatable {
+final class NotificationAction: RawRepresentable, Equatable {
     
     typealias RawValue = String
     

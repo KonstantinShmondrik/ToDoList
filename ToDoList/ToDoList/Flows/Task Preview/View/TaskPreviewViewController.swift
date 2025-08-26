@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TaskPreviewViewController: UIViewController {
+final class TaskPreviewViewController: UIViewController {
 
     var presenter: TaskPreviewPresenterInput?
 
@@ -89,7 +89,4 @@ class TaskPreviewViewController: UIViewController {
     }
 }
 
-extension TaskPreviewViewController: TaskPreviewViewInput {
-
-    
-}
+extension TaskPreviewViewController: TaskPreviewViewInput {}

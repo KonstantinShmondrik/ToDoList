@@ -12,7 +12,7 @@ enum Texts {
 
     enum AlertMessage {
         static let error = "Ошибка"
-        static let cansel = "Отмена"
+        static let cancel = "Отмена"
         static let OK = "Ok"
         static let yes = "Да"
         static let emptyIcons = "По вашему запросу ничего не найдено"
@@ -36,5 +36,18 @@ enum Texts {
         static let badResponse = "Некорректный ответ сервера"
         static let tooManyRequests = "Слишком много запросов"
         static let accessDenied = "Доступ запрещен"
+    }
+
+    enum LocalTexts {
+        static let edit = "Редактировать"
+        static let share = "Поделиться"
+        static let delete = "Удалить"
+        static let task = "Задача"
+        static let oneTask = "1 задача"
+        static let manyTasks = "задач"
+        static let noTasks = "Нет задач"
+        static let tasks = "Задачи"
+        static let search = "Поиск"
+        static let back = "Назад"
     }
 }

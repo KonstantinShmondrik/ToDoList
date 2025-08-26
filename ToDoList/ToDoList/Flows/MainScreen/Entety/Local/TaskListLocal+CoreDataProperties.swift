@@ -31,7 +31,7 @@ extension TaskListLocal : Identifiable {
 
 extension TaskListLocal {
 
-    var createdAtFarmat: String? {
+    var createdAtFormat: String? {
         guard let createdAt = createdAt else { return nil }
         return createdAt.formattedAsDayMonthYear
     }

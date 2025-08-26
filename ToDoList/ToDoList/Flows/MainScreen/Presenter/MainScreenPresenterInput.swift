@@ -11,13 +11,10 @@ protocol MainScreenPresenterInput: AnyObject {
 
     func getData()
     func makePreviewViewController(for item: TaskItem) -> UIViewController
-    func makeContextMenuActions(for item: TaskItem) -> UIMenu
-
+    func makeContextMenu(for item: TaskItem) -> UIMenu
     func deleteItem(_ item: TaskItem)
     func completeItem(_ item: TaskItem)
-
     func createNewTask()
-    func goToTaskDitails(for item: TaskItem)
-
+    func didSelectTask(_ task: TaskItem)
     func findTask(containing text: String)
 }
